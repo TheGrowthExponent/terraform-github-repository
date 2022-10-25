@@ -513,7 +513,7 @@ resource "github_repository_environment" "environment" {
   environment = each.key
   repository  = github_repository.repository.name
   reviewers {
-    users = var.admin_collaborators
+    users = try(each.value.reviewers, null)
 #    teams = var.admin_team_ids
   }
   deployment_branch_policy {
