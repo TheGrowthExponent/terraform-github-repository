@@ -1,57 +1,89 @@
-output "github_repository" {
-  description = "Exported Attributes for `github_repository`."
-  value       = github_repository.main
+# ----------------------------------------------------------------------------------------------------------------------
+# OUTPUT CALCULATED VARIABLES (prefer full objects)
+# ----------------------------------------------------------------------------------------------------------------------
+
+output "full_name" {
+  value       = github_repository.repository.full_name
+  description = "A string of the form 'orgname/reponame'."
 }
 
-# TODO: enable when resource is enabled
-#output "github_branch" {
-#  description = "Exported Attributes for `github_branch`."
-#  value       = github_branch.main
-#}
-
-# TODO: enable when resource is enabled
-#output "github_branch_default" {
-#  description = "Exported Attributes for `github_branch_default`."
-#  value       = github_branch_default.main
-#}
-
-# TODO: enable when resource is enabled
-#output "github_branch_protection" {
-#  description = "Exported Attributes for `github_branch_protection`."
-#  value       = github_branch_protection.main
-#}
-
-output "github_repository_deploy_key" {
-  description = "Exported Attributes for `github_repository_deploy_key`."
-  value       = github_repository_deploy_key.main
+output "html_url" {
+  value       = github_repository.repository.html_url
+  description = "URL to the repository on the web."
 }
 
-output "github_repository_collaborator" {
-  description = "Exported Attributes for `github_repository_collaborator`."
-  value       = github_repository_collaborator.main
+output "ssh_clone_url" {
+  value       = github_repository.repository.ssh_clone_url
+  description = "URL that can be provided to git clone to clone the repository via SSH."
 }
 
-output "github_team_repository" {
-  description = "Exported Attributes for `github_team_repository`."
-  value       = github_team_repository.main
+output "http_clone_url" {
+  value       = github_repository.repository.http_clone_url
+  description = "URL that can be provided to git clone to clone the repository via HTTPS."
 }
 
-output "github_issue_label" {
-  description = "Exported Attributes for `github_issue_label`."
-  value       = github_issue_label.main
+output "git_clone_url" {
+  value       = github_repository.repository.git_clone_url
+  description = "URL that can be provided to git clone to clone the repository anonymously via the git protocol."
 }
 
-output "github_repository_project" {
-  description = "Exported Attributes for `github_repository_project`."
-  value       = github_repository_project.main
+# ----------------------------------------------------------------------------------------------------------------------
+# OUTPUT ALL RESOURCES AS FULL OBJECTS
+# ----------------------------------------------------------------------------------------------------------------------
+
+output "repository" {
+  value       = github_repository.repository
+  description = "All attributes and arguments as returned by the github_repository resource."
 }
 
-output "github_repository_file" {
-  description = "Exported Attributes for `github_repository_file`."
-  value       = github_repository_file.main
+output "branches" {
+  value       = github_branch.branch
+  description = "A map of branch objects keyed by branch name."
 }
 
-output "github_repository_webhook" {
-  description = "Exported Attributes for `github_repository_webhook`."
-  value       = github_repository_webhook.main
+output "collaborators" {
+  value       = github_repository_collaborator.collaborator
+  description = "A map of collaborator objects keyed by collaborator.name."
 }
+
+output "projects" {
+  value       = github_repository_project.repository_project
+  description = "A map of projects keyed by project input id."
+}
+
+output "issue_labels" {
+  value       = github_issue_label.label
+  description = "A map of issue labels keyed by label input id or name."
+}
+
+locals {
+  deploy_keys_output = merge({
+    for i, d in github_repository_deploy_key.deploy_key_computed :
+    lookup(local.deploy_keys_computed_temp[i], "id", md5(d.key)) => d
+  }, github_repository_deploy_key.deploy_key)
+}
+
+output "deploy_keys" {
+  value       = local.deploy_keys_output
+  description = "A map of deploy keys keyed by input id."
+}
+
+output "webhooks" {
+  value       = github_repository_webhook.repository_webhook
+  sensitive   = true
+  description = "All attributes and arguments as returned by the github_repository_webhook resource."
+}
+
+output "secrets" {
+  value       = [for secret in github_actions_secret.repository_secret : secret.secret_name]
+  description = "List of secrets available."
+}
+
+output "app_installations" {
+  value       = github_app_installation_repository.app_installation_repository
+  description = "A map of deploy app installations keyed by installation id."
+}
+
+# ----------------------------------------------------------------------------------------------------------------------
+# OUTPUT MODULE CONFIGURATION
+# ----------------------------------------------------------------------------------------------------------------------

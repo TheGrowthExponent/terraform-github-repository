@@ -1,3 +1,6 @@
+# ---------------------------------------------------------------------------------------------------------------------
+# SET TERRAFORM AND PROVIDER REQUIREMENTS FOR RUNNING THIS MODULE
+# ---------------------------------------------------------------------------------------------------------------------
 terraform {
   # see https://www.terraform.io/docs/language/settings/index.html#specifying-provider-requirements
   required_providers {

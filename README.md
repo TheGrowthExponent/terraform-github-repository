@@ -32,11 +32,11 @@ Add the module to your Terraform resources like so:
 
 ```hcl
 module "new_repo" {
-  source  = "the-growth-exponent/repository/github"
-  version = "4.0.0"
+  source  = "TheGrowthExponent/repository/github"
+  version = "1.0.2"
 
   name       = "new_repo"
-  visibility = false
+  visibility = "private"
 }
 ```
 
