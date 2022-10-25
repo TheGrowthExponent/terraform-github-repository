@@ -181,7 +181,7 @@ resource "github_branch_default" "default" {
 # https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection_v3
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "github_branch_protection_v3" "branch_protection" {
+resource "github_branch_protection" "branch_protection" {
   count = length(local.branch_protections)
 
   # ensure we have all members and collaborators added before applying
@@ -193,8 +193,8 @@ resource "github_branch_protection_v3" "branch_protection" {
     github_branch.branch,
   ]
 
-  repository                      = github_repository.repository.name
-  branch                          = local.branch_protections[count.index].branch
+  repository_id                       = github_repository.repository.name
+  pattern                                    = local.branch_protections[count.index].branch
   enforce_admins                  = local.branch_protections[count.index].enforce_admins
   require_conversation_resolution = local.branch_protections[count.index].require_conversation_resolution
   require_signed_commits          = local.branch_protections[count.index].require_signed_commits
@@ -213,22 +213,15 @@ resource "github_branch_protection_v3" "branch_protection" {
 
     content {
       dismiss_stale_reviews           = required_pull_request_reviews.value.dismiss_stale_reviews
-      dismissal_users                 = required_pull_request_reviews.value.dismissal_users
-      dismissal_teams                 = [for t in required_pull_request_reviews.value.dismissal_teams : replace(lower(t), "/[^a-z0-9_]/", "-")]
+      restrict_dismissals=true
+      dismissal_restrictions                 = required_pull_request_reviews.value.dismissal_users
+      pull_request_bypassers= required_pull_request_reviews.value.dismissal_users
       require_code_owner_reviews      = required_pull_request_reviews.value.require_code_owner_reviews
       required_approving_review_count = required_pull_request_reviews.value.required_approving_review_count
     }
   }
 
-  dynamic "restrictions" {
-    for_each = local.restrictions[count.index]
-
-    content {
-      users = restrictions.value.users
-      teams = [for t in restrictions.value.teams : replace(lower(t), "/[^a-z0-9_]/", "-")]
-      apps  = restrictions.value.apps
-    }
-  }
+  push_restrictions= local.team_push
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -506,4 +499,26 @@ resource "github_app_installation_repository" "app_installation_repository" {
 
   repository      = github_repository.repository.name
   installation_id = each.value
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Environments
+# ---------------------------------------------------------------------------------------------------------------------
+locals {
+  environments_map = { for e in var.environments : e.name => e }
+}
+
+resource "github_repository_environment" "environment" {
+  for_each = local.environments_map
+  environment  = each.key
+  repository   = github_repository.repository.name
+  reviewers {
+    users = var.admin_collaborators
+    teams = var.admin_team_ids
+  }
+  deployment_branch_policy {
+    protected_branches          = false
+    custom_branch_policies = true
+    # source_branch = try(each.value.branch, null)
+  }
 }

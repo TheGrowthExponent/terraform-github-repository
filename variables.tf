@@ -24,6 +24,16 @@ variable "branches" {
   default = []
 }
 
+variable "environments" {
+  description = "(Optional) A list of environments to be created in this repository."
+  type        = any
+  # type = list(object({
+  #   name          = string
+  #   branch = optional(string)
+  # }))
+  default = []
+}
+
 variable "defaults" {
   description = "(Optional) Overwrite defaults for various repository settings"
   type        = any
