@@ -193,8 +193,8 @@ resource "github_branch_protection" "branch_protection" {
     github_branch.branch,
   ]
 
-  repository_id                       = github_repository.repository.name
-  pattern                                    = local.branch_protections[count.index].branch
+  repository_id                   = github_repository.repository.name
+  pattern                         = local.branch_protections[count.index].branch
   enforce_admins                  = local.branch_protections[count.index].enforce_admins
   require_conversation_resolution = local.branch_protections[count.index].require_conversation_resolution
   require_signed_commits          = local.branch_protections[count.index].require_signed_commits
@@ -213,15 +213,15 @@ resource "github_branch_protection" "branch_protection" {
 
     content {
       dismiss_stale_reviews           = required_pull_request_reviews.value.dismiss_stale_reviews
-      restrict_dismissals=true
-      dismissal_restrictions                 = required_pull_request_reviews.value.dismissal_users
-      pull_request_bypassers= required_pull_request_reviews.value.dismissal_users
+      restrict_dismissals             = true
+      dismissal_restrictions          = required_pull_request_reviews.value.dismissal_users
+      pull_request_bypassers          = required_pull_request_reviews.value.dismissal_users
       require_code_owner_reviews      = required_pull_request_reviews.value.require_code_owner_reviews
       required_approving_review_count = required_pull_request_reviews.value.required_approving_review_count
     }
   }
 
-  push_restrictions= local.team_push
+  push_restrictions = local.team_push
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -509,16 +509,16 @@ locals {
 }
 
 resource "github_repository_environment" "environment" {
-  for_each = local.environments_map
-  environment  = each.key
-  repository   = github_repository.repository.name
+  for_each    = local.environments_map
+  environment = each.key
+  repository  = github_repository.repository.name
   reviewers {
     users = var.admin_collaborators
-    teams = var.admin_team_ids
+#    teams = var.admin_team_ids
   }
   deployment_branch_policy {
-    protected_branches          = false
+    protected_branches     = false
     custom_branch_policies = true
-    # source_branch = try(each.value.branch, null)
+    # branch = try(each.value.branch, null)
   }
 }
