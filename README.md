@@ -40,7 +40,7 @@ module "new_repo" {
 }
 ```
 
-Then, fetch the module from the [Terraform Registry](https://registry.terraform.io/modules/the-growth-exponent/repository/github) using `terraform get`.
+Then, fetch the module from the [Terraform Registry](https://registry.terraform.io/modules/TheGrowthExponent/repository/github/latest) using `terraform get`.
 
 Additional usage examples are available in the `examples` directory via [GitHub](https://github.com/TheGrowthExponent/terraform-github-repository/tree/main/examples).
 
