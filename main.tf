@@ -511,10 +511,6 @@ resource "github_app_installation_repository" "app_installation_repository" {
 # ---------------------------------------------------------------------------------------------------------------------
 # Environments
 # ---------------------------------------------------------------------------------------------------------------------
-data "github_user" "current" {
-  username = "jpascoe"
-}
-
 locals {
   environments_map = { for e in var.environments : e.name => e }
 }
@@ -524,11 +520,33 @@ resource "github_repository_environment" "environment" {
   environment = each.key
   repository  = github_repository.repository.name
   reviewers {
-    users = [data.github_user.current.id]
+    users = each.value.reviewers
+    teams = var.admin_team_ids
   }
   deployment_branch_policy {
     protected_branches     = false
     custom_branch_policies = true
     # branch = try(each.value.branch, null)
   }
+}
+
+resource "github_actions_environment_secret" "aws_access_key_id" {
+  for_each    = local.environments_map
+  environment = each.key
+  repository  = github_repository.repository.name
+  secret_name = "AWS_ACCESS_KEY_ID"
+}
+
+resource "github_actions_environment_secret" "aws_secret_access_key" {
+  for_each    = local.environments_map
+  environment = each.key
+  repository  = github_repository.repository.name
+  secret_name = "AWS_SECRET_ACCESS_KEY"
+}
+
+resource "github_actions_environment_secret" "aws_role_external_id" {
+  for_each    = local.environments_map
+  environment = each.key
+  repository  = github_repository.repository.name
+  secret_name = "AWS_ROLE_EXTERNAL_ID"
 }
