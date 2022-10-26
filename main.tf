@@ -511,17 +511,14 @@ resource "github_app_installation_repository" "app_installation_repository" {
 # ---------------------------------------------------------------------------------------------------------------------
 # Environments
 # ---------------------------------------------------------------------------------------------------------------------
-locals {
-  environments_map = { for e in var.environments : e.name => e }
-}
-
 resource "github_repository_environment" "environment" {
-  for_each    = local.environments_map
-  environment = each.key
+  count = length(var.environments)
+
+  environment = var.environments[count.index].name
   repository  = github_repository.repository.name
   reviewers {
-    users = try(each.value.reviewers, null)
-#    teams = var.admin_team_ids
+    users = try(var.environments[count.index].reviewers, null)
+    teams = var.admin_team_ids
   }
   deployment_branch_policy {
     protected_branches     = false
