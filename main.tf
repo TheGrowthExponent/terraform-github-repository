@@ -511,6 +511,10 @@ resource "github_app_installation_repository" "app_installation_repository" {
 # ---------------------------------------------------------------------------------------------------------------------
 # Environments
 # ---------------------------------------------------------------------------------------------------------------------
+data "github_user" "current" {
+  username = "jpascoe"
+}
+
 locals {
   environments_map = { for e in var.environments : e.name => e }
 }
@@ -520,8 +524,7 @@ resource "github_repository_environment" "environment" {
   environment = each.key
   repository  = github_repository.repository.name
   reviewers {
-    users = var.admin_collaborators
-    teams = var.admin_team_ids
+    users = [data.github_user.current.id]
   }
   deployment_branch_policy {
     protected_branches     = false
