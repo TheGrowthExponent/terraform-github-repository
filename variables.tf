@@ -30,7 +30,7 @@ variable "environments" {
   # type = list(object({
   #   name          = string
   #   branch = optional(string)
-  #   reviewers = optional(list(string))
+  #   reviewers = optional(list(number))
   # }))
   default = []
 }
