@@ -525,7 +525,7 @@ resource "github_repository_environment" "environment" {
   }
   deployment_branch_policy {
     protected_branches     = true
-    custom_branch_policies = true
+    custom_branch_policies = false
 #    branch                 = try(each.value.branch, null)
   }
 }
