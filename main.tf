@@ -524,8 +524,8 @@ resource "github_repository_environment" "environment" {
     teams = var.admin_team_ids
   }
   deployment_branch_policy {
-    protected_branches     = true
-    custom_branch_policies = false
+    protected_branches     = false
+    custom_branch_policies = true
     #    branch                 = try(each.value.branch, null)
   }
   depends_on = [github_branch_protection_v3.branch_protection]
