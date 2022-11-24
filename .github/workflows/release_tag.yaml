@@ -23,7 +23,6 @@ jobs:
           release_name: ${{ github.ref }}
           body: |
             Changes in this Release
-            - First Change
-            - Second Change
+            - Add dependencies to env and secrets
           draft: false
           prerelease: false
