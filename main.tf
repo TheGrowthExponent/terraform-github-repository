@@ -526,8 +526,9 @@ resource "github_repository_environment" "environment" {
   deployment_branch_policy {
     protected_branches     = true
     custom_branch_policies = false
-#    branch                 = try(each.value.branch, null)
+    #    branch                 = try(each.value.branch, null)
   }
+  depends_on = [github_branch_protection_v3.branch_protection]
 }
 
 resource "github_actions_environment_secret" "aws_access_key_id" {
@@ -535,6 +536,7 @@ resource "github_actions_environment_secret" "aws_access_key_id" {
   environment = each.key
   repository  = github_repository.repository.name
   secret_name = "AWS_ACCESS_KEY_ID"
+  depends_on  = [github_repository_environment.environment]
 }
 
 resource "github_actions_environment_secret" "aws_secret_access_key" {
@@ -542,6 +544,7 @@ resource "github_actions_environment_secret" "aws_secret_access_key" {
   environment = each.key
   repository  = github_repository.repository.name
   secret_name = "AWS_SECRET_ACCESS_KEY"
+  depends_on  = [github_repository_environment.environment]
 }
 
 resource "github_actions_environment_secret" "aws_role_external_id" {
@@ -549,4 +552,5 @@ resource "github_actions_environment_secret" "aws_role_external_id" {
   environment = each.key
   repository  = github_repository.repository.name
   secret_name = "AWS_ROLE_EXTERNAL_ID"
+  depends_on  = [github_repository_environment.environment]
 }
