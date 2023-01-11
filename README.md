@@ -13,6 +13,12 @@
     * [Inputs](#inputs)
     * [Outputs](#outputs)
   * [Notes](#notes)
+    * [Upgrades](#upgrades)
+    * [For `github_repository` resources](#for-githubrepository-resources)
+    * [For `github_repository_deploy_key` resources](#for-githubrepositorydeploykey-resources)
+    * [For `github_branch_protection` resources](#for-githubbranchprotection-resources)
+    * [For `github_repository_project` resources](#for-githubrepositoryproject-resources)
+    * [For `github_repository_file` resources](#for-githubrepositoryfile-resources)
   * [Author Information](#author-information)
   * [License](#license)
 <!-- TOC -->
@@ -24,7 +30,8 @@
 
 ## Dependencies
 
-This module depends on a correctly configured [GitHub Provider](https://www.terraform.io/docs/providers/github/index.html) in your Terraform codebase.
+This module depends on a correctly
+configured [GitHub Provider](https://www.terraform.io/docs/providers/github/index.html) in your Terraform codebase.
 
 ## Usage
 
@@ -40,11 +47,15 @@ module "new_repo" {
 }
 ```
 
-Then, fetch the module from the [Terraform Registry](https://registry.terraform.io/modules/TheGrowthExponent/repository/github/latest) using `terraform get`.
+Then, fetch the module from
+the [Terraform Registry](https://registry.terraform.io/modules/TheGrowthExponent/repository/github/latest)
+using `terraform get`.
 
-Additional usage examples are available in the `examples` directory via [GitHub](https://github.com/TheGrowthExponent/terraform-github-repository/tree/main/examples).
+Additional usage examples are available in the `examples` directory
+via [GitHub](https://github.com/TheGrowthExponent/terraform-github-repository/tree/main/examples).
 
 <!-- BEGIN_TF_DOCS -->
+
 ### Inputs
 
 | Name                     | Description                                                        | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | Default      | Required |
@@ -86,16 +97,17 @@ Additional usage examples are available in the `examples` directory via [GitHub]
 
 ### Outputs
 
-| Name | Description |
-|------|-------------|
-| github_issue_label | Exported Attributes for `github_issue_label`. |
-| github_repository | Exported Attributes for `github_repository`. |
+| Name                           | Description                                               |
+|--------------------------------|-----------------------------------------------------------|
+| github_issue_label             | Exported Attributes for `github_issue_label`.             |
+| github_repository              | Exported Attributes for `github_repository`.              |
 | github_repository_collaborator | Exported Attributes for `github_repository_collaborator`. |
-| github_repository_deploy_key | Exported Attributes for `github_repository_deploy_key`. |
-| github_repository_file | Exported Attributes for `github_repository_file`. |
-| github_repository_project | Exported Attributes for `github_repository_project`. |
-| github_repository_webhook | Exported Attributes for `github_repository_webhook`. |
-| github_team_repository | Exported Attributes for `github_team_repository`. |
+| github_repository_deploy_key   | Exported Attributes for `github_repository_deploy_key`.   |
+| github_repository_file         | Exported Attributes for `github_repository_file`.         |
+| github_repository_project      | Exported Attributes for `github_repository_project`.      |
+| github_repository_webhook      | Exported Attributes for `github_repository_webhook`.      |
+| github_team_repository         | Exported Attributes for `github_team_repository`.         |
+
 <!-- END_TF_DOCS -->
 
 ## Notes
@@ -106,39 +118,54 @@ Additional usage examples are available in the `examples` directory via [GitHub]
 terraform import module.my_repository.github_branch_default.this "my_repository"
 ```
 
-Replace `module.my_repository` with the Module identifier in use and replace `"my_repository"` with the name of the repository the data is imported from.
+Replace `module.my_repository` with the Module identifier in use and replace `"my_repository"` with the name of the
+repository the data is imported from.
 
 ### For `github_repository` resources
 
-- Resources that are created with the `template` option enabled will be re-created (that is: _destroyed_, then created again) when the `template` stub is removed
+- Resources that are created with the `template` option enabled will be re-created (that is: _destroyed_, then created
+  again) when the `template` stub is removed
 
-- Resources that are archived using the `archive` option cannot be unarchived, as the GitHub API does not currently support this
+- Resources that are archived using the `archive` option cannot be unarchived, as the GitHub API does not currently
+  support this
 
 ### For `github_repository_deploy_key` resources
 
-- Deploy Key resources expect a string for the `deploy_key.key` variable. Use the [file](https://www.terraform.io/docs/configuration/functions/file.html) function if key material is not available as a Terraform-variable already
+- Deploy Key resources expect a string for the `deploy_key.key` variable. Use
+  the [file](https://www.terraform.io/docs/configuration/functions/file.html) function if key material is not available
+  as a Terraform-variable already
 
-- For a step-by-step guide on how to generate SSH Keys, see [this article](https://help.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key) on GitHub
+- For a step-by-step guide on how to generate SSH Keys,
+  see [this article](https://help.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key)
+  on GitHub
 
 ### For `github_branch_protection` resources
 
-- Branch Protection resources that set the [required_approving_review_count](https://www.terraform.io/docs/providers/github/r/branch_protection.html#required_approving_review_count) variable must be in a range of `>= 1` and `<= 6`
+- Branch Protection resources that set
+  the [required_approving_review_count](https://www.terraform.io/docs/providers/github/r/branch_protection.html#required_approving_review_count)
+  variable must be in a range of `>= 1` and `<= 6`
 
 ### For `github_repository_project` resources
 
-- Project resources require GitHub Projects to be enabled for the Organization as well as the `has_projects` variable set to `true`
+- Project resources require GitHub Projects to be enabled for the Organization as well as the `has_projects` variable
+  set to `true`
 
 ### For `github_repository_file` resources
 
-- File resources require an (already existing) `main` branch, or an explicitly defined branch for the `files.branch` variable to avoid errors
+- File resources require an (already existing) `main` branch, or an explicitly defined branch for the `files.branch`
+  variable to avoid errors
 
-- File resources expect a string for the `files.content` variable. Use the [file](https://www.terraform.io/docs/configuration/functions/file.html) function if file data is not available as a Terraform-variable already
+- File resources expect a string for the `files.content` variable. Use
+  the [file](https://www.terraform.io/docs/configuration/functions/file.html) function if file data is not available as
+  a Terraform-variable already
 
-- File resources that are removed from Terraform will _also_ be removed from the Repository. This is visible in the Repository History
+- File resources that are removed from Terraform will _also_ be removed from the Repository. This is visible in the
+  Repository History
 
 ## Author Information
 
-This module is maintained by the contributors listed on [GitHub](https://github.com/TheGrowthExponent/terraform-github-repository/graphs/contributors).
+This module is maintained by the contributors listed
+on [GitHub](https://github.com/TheGrowthExponent/terraform-github-repository/graphs/contributors).
 
 ## License
 
@@ -146,6 +173,7 @@ Licensed under the Apache License, Version 2.0 (the "License").
 
 You may obtain a copy of the License at [apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an _"AS IS"_ basis, without WARRANTIES or conditions of any kind, either express or implied.
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an
+_"AS IS"_ basis, without WARRANTIES or conditions of any kind, either express or implied.
 
 See the License for the specific language governing permissions and limitations under the License.
