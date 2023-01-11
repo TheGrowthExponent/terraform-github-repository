@@ -198,6 +198,9 @@ resource "github_branch_protection_v3" "branch_protection" {
   enforce_admins                  = local.branch_protections[count.index].enforce_admins
   require_conversation_resolution = local.branch_protections[count.index].require_conversation_resolution
   require_signed_commits          = local.branch_protections[count.index].require_signed_commits
+  allows_deletions                = false
+  allows_force_pushes             = false
+  lock_branch                     = false
 
   dynamic "required_status_checks" {
     for_each = local.required_status_checks[count.index]
